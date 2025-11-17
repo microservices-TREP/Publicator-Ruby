@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0
+    container_name: trep_mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_DATABASE: trep_publicator
+    volumes:
+      - mongo_data:/data/db
+
+  publicator:
+    build: .
+    container_name: trep_publicator
+    ports:
+      - "50052:50052"
+      - "4000:4000"
+    depends_on:
+      - mongodb
+    environment:
+      MONGO_URL: "mongodb://mongodb:27017/trep_publicator"
+    command: ruby app/server.rb
+
+volumes:
+  mongo_data:

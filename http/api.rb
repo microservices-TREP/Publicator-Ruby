@@ -1,29 +1,81 @@
 require 'sinatra'
-require 'json'
+require 'sinatra/json'
 require_relative '../db/actas_repository'
-require_relative '../db/stats_repository'
-require_relative '../app/graphql_schema'
+require_relative '../swagger/swagger_root'
+require_relative '../swagger/swagger_actas'
+require 'swagger/blocks'
 
-post '/graphql' do
-  content_type :json
-  request.body.rewind
-  payload = JSON.parse(request.body.read)
-  result = GraphQLSchema::Schema.execute(payload['query'], variables: payload['variables'])
-  result.to_json
-end
+class Api < Sinatra::Base
+  helpers Sinatra::JSON
 
-get "/api/actas/:id" do
-  acta = ActasRepository.find(params[:id])
-  return { ok: false, message: "No encontrada" }.to_json if acta.nil?
-  acta.to_json
-end
+  set :bind, '0.0.0.0'
+  set :port, 4001
 
-get "/api/departamentos/:dep/estadisticas" do
-  stats = StatsRepository.get_stats(params[:dep])
-  return { ok: false, message: "No encontrada" }.to_json if stats.nil?
-  stats.to_json
-end
+  use Rack::Cors do
+    allow do
+      origins '*'
+      resource '*', headers: :any, methods: [:get, :post]
+    end
+  end
 
-get "/api/resultados/globales" do
-  StatsRepository.global.to_json
+  # ---------------------------
+  #        ENDPOINTS
+  # ---------------------------
+
+  get "/health" do
+    json status: "ok", service: "publicator"
+  end
+
+  get "/actas" do
+    json ActasRepository.all
+  end
+
+  get "/actas/:id" do
+    acta = ActasRepository.find(params[:id])
+    halt 404, json(error: "No existe el acta #{params[:id]}") unless acta
+    json acta
+  end
+
+  post "/actas" do
+    payload = JSON.parse(request.body.read)
+    ActasRepository.save(payload)
+    status 201
+    json payload
+  end
+
+  get "/stats/regions" do
+    stats = ActasRepository.stats_by_region
+    json stats
+  end
+
+  # ---------------------------
+  #      SWAGGER ENDPOINTS
+  # ---------------------------
+
+  get "/swagger.json" do
+    content_type 'application/json'
+    Swagger::Blocks.build_root_json([SwaggerRoot, SwaggerActas]).to_json
+  end
+
+  get "/docs" do
+    <<-HTML
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Publicator API Docs</title>
+      <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css" />
+    </head>
+    <body>
+      <div id="swagger-ui"></div>
+      <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+      <script>
+        SwaggerUIBundle({
+          url: "/swagger.json",
+          dom_id: "#swagger-ui"
+        });
+      </script>
+    </body>
+    </html>
+    HTML
+  end
 end

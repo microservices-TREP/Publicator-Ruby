@@ -19,7 +19,7 @@ RUN bundle install --no-cache
 COPY . .
 
 # Expone los puertos
-EXPOSE 50052 4000
+EXPOSE 50052 4000 4001
 
 # Comando para ejecutar el servidor
 CMD ["ruby", "app/server.rb"]

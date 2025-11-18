@@ -9,3 +9,5 @@ gem "mongo"
 gem 'graphql'
 gem 'graphql-playground'
 gem 'rack-cors'
+gem 'sinatra-contrib'
+gem 'swagger-blocks'

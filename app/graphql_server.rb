@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'graphql'
 require "rack/cors"
+require 'graphql/playground'
 require_relative '../graphql/schema'
 
 class GraphQLServer < Sinatra::Base
@@ -29,6 +30,8 @@ class GraphQLServer < Sinatra::Base
 
   get "/playground" do
     content_type 'text/html'
-    File.read(File.join(settings.public_folder, "graphql_playground.html"))
+    GraphQL::Playground.render(
+      endpoint: "/graphql"
+    )
   end
 end

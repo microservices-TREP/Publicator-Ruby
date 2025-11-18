@@ -6,4 +6,6 @@ gem "rack"
 gem "webrick"
 gem "sinatra"
 gem "mongo"
-gem "graphql"
+gem 'graphql'
+gem 'graphql-playground'
+gem 'rack-cors'

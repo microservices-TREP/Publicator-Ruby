@@ -14,4 +14,10 @@ module ActasRepository
   def find(id)
     DB.actas.find(id: id).first
   end
+
+  module_function
+
+  def all
+    DB.actas.find.to_a
+  end
 end

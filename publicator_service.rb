@@ -12,8 +12,13 @@ class PublicatorService < Trep::PublicatorService::Service
     acta_hash = {
       id: acta.id,
       mesa_id: acta.mesa,                  # campo 'mesa' en protobuf
-      votos: acta.votos_validos.to_i,      # usar votos_validos como 'votos'
+      votos_validos: acta.votos_validos.to_i,      # campo usado por StatsRepository
+      votos_invalidos: acta.votos_invalidos.to_i,
       departamento: acta.departamento,
+      provincia: acta.provincia,
+      municipio: acta.municipio,
+      recinto: acta.recinto,
+      partido: acta.respond_to?(:partido) ? acta.partido : nil,
       hora_validacion: Time.now
     }
 

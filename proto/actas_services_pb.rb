@@ -2,7 +2,7 @@
 # Source: actas.proto for package 'trep'
 
 require 'grpc'
-require_relative 'actas_pb'
+require_relative './actas_pb'
 
 module Trep
   module PublicatorService

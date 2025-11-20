@@ -7,7 +7,7 @@ class ActaType < GraphQL::Schema::Object
   field :provincia, String, null: true
   field :municipio, String, null: true
   field :recinto, String, null: true
-  field :partido, String, null: true
+  field :votos_partidos, GraphQL::Types::JSON, null: true
   field :votos_validos, Integer, null: true
   field :votos_invalidos, Integer, null: true
   field :hora_validacion, String, null: true

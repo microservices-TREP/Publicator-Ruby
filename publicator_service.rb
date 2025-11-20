@@ -8,6 +8,10 @@ class PublicatorService < Trep::PublicatorService::Service
   def publish_acta(acta, _unused)
     puts "📥 Acta recibida por gRPC: #{acta.id}"
 
+    votos_partidos_hash = {}
+    acta.votos_partidos.each do |partido, votos|
+      votos_partidos_hash[partido] = votos.to_i
+    end
     # Mapear campos del mensaje protobuf a la estructura interna
     acta_hash = {
       id: acta.id,
@@ -18,7 +22,7 @@ class PublicatorService < Trep::PublicatorService::Service
       provincia: acta.provincia,
       municipio: acta.municipio,
       recinto: acta.recinto,
-      partido: acta.respond_to?(:partido) ? acta.partido : nil,
+      votos_partidos: votos_partidos_hash,
       hora_validacion: Time.now
     }
 

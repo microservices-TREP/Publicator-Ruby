@@ -18,26 +18,45 @@ class SwaggerRoot
   end
 
   swagger_schema :Acta do
-    key :required, [:id, :mesa]
     property :id do
       key :type, :string
-      key :example, "ACTA_001"
     end
-    property :mesa do
+    property :mesa_id do
       key :type, :string
-      key :example, "MESA_123"
     end
-    property :region do
+    property :departamento do
       key :type, :string
-      key :example, "LA PAZ"
+    end
+    property :provincia do
+      key :type, :string
+    end
+    property :municipio do
+      key :type, :string
+    end
+    property :recinto do
+      key :type, :string
     end
     property :votos_validos do
       key :type, :integer
-      key :example, 200
     end
-    property :votos_nulos do
+    property :votos_invalidos do
       key :type, :integer
-      key :example, 5
+    end
+
+    # Nuevo objeto: votos_partidos
+    property :votos_partidos do
+      key :type, :object
+      key :properties, {}   # obligatorio para swagger-blocks <3.1
+      key "x-additionalProperties", { type: :integer }
+      key :example, {
+        "partido_A": 70,
+        "partido_B": 55
+      }
+    end
+
+    property :hora_validacion do
+      key :type, :string
+      key :format, :date_time
     end
   end
 end

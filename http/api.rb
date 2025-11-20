@@ -35,16 +35,38 @@ class Api < Sinatra::Base
     halt 404, json(error: "No existe el acta #{params[:id]}") unless acta
     json acta
   end
+  # ---------------------------
+  #      POST POR SIACASO, este servicio no crea actas
+  # ---------------------------
+  # post "/actas" do
+  #   payload = JSON.parse(request.body.read)
+  #   ActasRepository.save(payload)
+  #   status 201
+  #   json payload
+  # end
 
-  post "/actas" do
-    payload = JSON.parse(request.body.read)
-    ActasRepository.save(payload)
-    status 201
-    json payload
+  get "/stats/recinto" do
+    stats = ActasRepository.stats_by_recinto
+    json stats
   end
 
-  get "/stats/regions" do
-    stats = ActasRepository.stats_by_region
+  get "/stats/municipio" do
+    stats = ActasRepository.stats_by_municipio
+    json stats
+  end
+
+  get "/stats/provincia" do
+    stats = ActasRepository.stats_by_provincia
+    json stats
+  end
+
+  get "/stats/departamento" do
+    stats = ActasRepository.stats_by_departamento
+    json stats
+  end
+
+  get "/stats/partidos" do
+    stats = ActasRepository.stats_votos_partidos_totales
     json stats
   end
 
